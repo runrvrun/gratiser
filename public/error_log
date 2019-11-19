@@ -1,0 +1,4 @@
+[01-Aug-2019 21:17:31 Asia/Jakarta] PHP Warning:  symlink() has been disabled for security reasons in /home/orid5973/public_html/gratiser/public/symlink.php on line 4
+[01-Aug-2019 21:20:18 Asia/Jakarta] PHP Warning:  symlink() has been disabled for security reasons in /home/orid5973/public_html/gratiser/public/symlink.php on line 4
+[01-Aug-2019 21:23:31 Asia/Jakarta] PHP Warning:  symlink() has been disabled for security reasons in /home/orid5973/public_html/gratiser/public/symlink.php on line 4
+[06-Oct-2019 09:21:12 UTC] PHP Fatal error:  Cannot use isset() on the result of an expression (you can use "null !== expression" instead) in /home/orid5973/public_html/gratiser/app/Http/Controllers/Api/UserController.php on line 42
