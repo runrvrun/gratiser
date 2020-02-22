@@ -50,27 +50,27 @@ class RedeemController extends Controller
             return response()->json(['status'=>'failed','message'=>'Incorrect PIN'], 400);
         }
         // check past redeem. cannot redeem in same merchant for 2 weeks
-        $recently_redeem = Redeem::join('store_product_stocks', function($join)
+        $recently_redeem = Redeem::join('store_product_stocks', function($join) use ($request)
         {
-            $join->on('merchant_id', $request->merchant_id);
-            $join->on('store_id', $request->store_id);
-            $join->on('product_id', $request->product_id);
+            $join->on('store_product_stocks.merchant_id', 'redeems.merchant_id');
+            $join->on('store_product_stocks.store_id', 'redeems.store_id');
+            $join->on('store_product_stocks.product_id', 'redeems.product_id');
         })
         ->where('device_id',$request->device_id)
-        ->where('merchant_id',$request->merchant_id)->where('store_id',$request->store_id)->where('product_id',$request->product_id)
+        ->where('redeems.merchant_id',$request->merchant_id)->where('redeems.store_id',$request->store_id)->where('redeems.product_id',$request->product_id)
         ->where('redeems.created_at','>','valid_start')
         ->where('redeems.created_at','>',Carbon::now()->subDays(14))->first();
         if($recently_redeem){
             return response()->json(['status'=>'failed','message'=>'Recently reedemed. Limit reached.'], 400);
         }
-        $recently_redeem = Redeem::join('store_product_stocks', function($join)
+        $recently_redeem = Redeem::join('store_product_stocks', function($join) use ($request)
         {
-            $join->on('merchant_id', $request->merchant_id);
-            $join->on('store_id', $request->store_id);
-            $join->on('product_id', $request->product_id);
+            $join->on('store_product_stocks.merchant_id', 'redeems.merchant_id');
+            $join->on('store_product_stocks.store_id', 'redeems.store_id');
+            $join->on('store_product_stocks.product_id', 'redeems.product_id');
         })
         ->where('user_id',$request->device_id)
-        ->where('merchant_id',$request->merchant_id)->where('store_id',$request->store_id)->where('product_id',$request->product_id)
+        ->where('redeems.merchant_id',$request->merchant_id)->where('redeems.store_id',$request->store_id)->where('redeems.product_id',$request->product_id)
         ->where('redeems.created_at','>','valid_start')
         ->where('redeems.created_at','>',Carbon::now()->subDays(14))->first();
         if($recently_redeem){
