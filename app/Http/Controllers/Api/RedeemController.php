@@ -50,17 +50,33 @@ class RedeemController extends Controller
             return response()->json(['status'=>'failed','message'=>'Incorrect PIN'], 400);
         }
         // check past redeem. cannot redeem in same merchant for 2 weeks
-        $recently_redeem = Redeem::where('device_id',$request->device_id)->where('merchant_id',$request->merchant_id)
-        ->where('created_at','>',Carbon::now()->subDays(14))->first();
+        $recently_redeem = Redeem::join('store_product_stocks', function($join)
+        {
+            $join->on('merchant_id', $request->merchant_id);
+            $join->on('store_id', $request->store_id);
+            $join->on('product_id', $request->product_id);
+        })
+        ->where('device_id',$request->device_id)
+        ->where('merchant_id',$request->merchant_id)->where('store_id',$request->store_id)->where('product_id',$request->product_id)
+        ->where('redeems.created_at','>','valid_start')
+        ->where('redeems.created_at','>',Carbon::now()->subDays(14))->first();
         if($recently_redeem){
             return response()->json(['status'=>'failed','message'=>'Recently reedemed. Limit reached.'], 400);
         }
-        $recently_redeem = Redeem::where('user_id',$request->device_id)->where('merchant_id',$request->merchant_id)
-        ->where('created_at','>',Carbon::now()->subDays(14))->first();
+        $recently_redeem = Redeem::join('store_product_stocks', function($join)
+        {
+            $join->on('merchant_id', $request->merchant_id);
+            $join->on('store_id', $request->store_id);
+            $join->on('product_id', $request->product_id);
+        })
+        ->where('user_id',$request->device_id)
+        ->where('merchant_id',$request->merchant_id)->where('store_id',$request->store_id)->where('product_id',$request->product_id)
+        ->where('redeems.created_at','>','valid_start')
+        ->where('redeems.created_at','>',Carbon::now()->subDays(14))->first();
         if($recently_redeem){
           return response()->json(['status'=>'failed','message'=>'Recently reedemed. Limit reached.'], 400);
         }
-        
+        // dd($recently_redeem);
         $requestData = ([
                 'user_id' => Auth::user()->id,
                 'merchant_id' => $request->merchant_id,
